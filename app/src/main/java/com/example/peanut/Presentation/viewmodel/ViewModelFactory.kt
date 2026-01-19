@@ -7,6 +7,7 @@ import com.example.peanut.domain.Repo.AuthRepository
 import com.example.peanut.data.local.Preferences.AuthPreferences
 import com.example.peanut.data.remote.RetrofitInstance
 import com.example.peanut.domain.Repo.AccountRepository
+import com.example.peanut.domain.Repo.OpenTreadsRepo
 
 class ViewModelFactory(
     private val context: Context
@@ -29,6 +30,13 @@ class ViewModelFactory(
                 val preferences = AuthPreferences(context.applicationContext)
                 @Suppress("UNCHECKED_CAST")
                 AccountInfoViewModel(repository, preferences) as T
+            }
+
+            modelClass.isAssignableFrom(OpenTradeViewModel::class.java)->{
+                val repository = OpenTreadsRepo()
+                val preferences = AuthPreferences(context.applicationContext)
+                @Suppress("UNCHECKED_CAST")
+                OpenTradeViewModel(repository,preferences) as T
             }
 
 

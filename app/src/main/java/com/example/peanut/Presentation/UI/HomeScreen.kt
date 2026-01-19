@@ -1,4 +1,4 @@
-package com.example.peanut.Presentation
+package com.example.peanut.Presentation.UI
 
 import android.R
 import android.util.Log
@@ -12,7 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,17 +20,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import com.example.peanut.Presentation.UI.HistoryScreen
-import com.example.peanut.Presentation.UI.ProfileScreen
 import com.example.peanut.Presentation.viewmodel.AccountInfoViewModel
 import com.example.peanut.Presentation.viewmodel.AuthViewModel
+import com.example.peanut.Presentation.viewmodel.OpenTradeViewModel
 import com.example.peanut.data.local.Preferences.AuthPreferences
 import com.example.peanut.domain.Model.navItemList
 
 @Composable
-fun  Home(authViewModel: AuthViewModel,
+fun  Home(
+    authViewModel: AuthViewModel,
     accountInfoViewModel: AccountInfoViewModel,
-    preferences: AuthPreferences
+    preferences: AuthPreferences,
+    openTradeViewModel: OpenTradeViewModel
     ) {
     var selectedIndex by remember { mutableStateOf(0) }
 
@@ -41,6 +41,7 @@ fun  Home(authViewModel: AuthViewModel,
         val token = preferences.getToken()
         Log.d("AccountVM", "Get Data From SharedPreferences login=$login token=$token")
         accountInfoViewModel.fetchAccountInfo(login.toString(), token.toString())
+        openTradeViewModel.fetchOpenTread(login.toString(), token.toString())
         if (login.isNullOrEmpty() || token.isNullOrEmpty()) {
             Log.e("AccountVM","Login or token missing")
         }
@@ -84,7 +85,7 @@ fun  Home(authViewModel: AuthViewModel,
     ){innerpadding->
         when(selectedIndex){
             0-> HomeScreen(innerpadding)
-            1-> HistoryScreen(innerpadding)
+            1-> HistoryScreen(innerpadding,openTradeViewModel)
             2-> ProfileScreen(
                 authViewModel,
                 accountInfoViewModel,

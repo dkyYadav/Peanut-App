@@ -32,4 +32,10 @@ class AccountInfoViewModel(
             }
         }
     }
+
+    fun refetchData(){
+       val login = preferences.getLogin()
+       val token = preferences.getToken()
+        fetchAccountInfo(login.toString(), token.toString())
+    }
 }

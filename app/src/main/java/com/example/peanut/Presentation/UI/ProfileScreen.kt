@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -49,10 +50,32 @@ fun ProfileScreen(
         }
         is UiState.Success ->{
             val data = (accountInfoState as UiState.Success<AccountInfoResponse>).data
-            ProfileContent(data,innerpadding)
+            ProfileContent(data,innerpadding,authViewModel)
         }
         is UiState.Failure -> {
-            Text("Something went wrong")
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+
+            ) {
+                Text("No Internet")
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(onClick = {
+                    accountInfoViewModel.refetchData()
+                }) {
+                    Text("Reload")
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    onClick = {
+                        authViewModel.logout()
+                    }
+                ) {
+                    Text("Logout")
+                }
+            }
         }
 
         else -> {}
@@ -60,7 +83,11 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileContent(account: AccountInfoResponse, innerpadding: PaddingValues) {
+fun ProfileContent(
+    account: AccountInfoResponse,
+    innerpadding: PaddingValues,
+    authViewModel: AuthViewModel
+) {
 
     LazyColumn(
         modifier = Modifier
@@ -81,6 +108,18 @@ fun ProfileContent(account: AccountInfoResponse, innerpadding: PaddingValues) {
             Spacer(modifier = Modifier.height(16.dp))
             AccountDetailsSection(account)
 
+        }
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(onClick = {
+                authViewModel.logout()
+            }, modifier = Modifier.padding(15.dp)
+            ) {
+                Text(
+                    text = "Logout"
+                )
+            }
         }
     }
 }

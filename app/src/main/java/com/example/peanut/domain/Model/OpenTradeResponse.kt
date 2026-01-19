@@ -1,6 +1,6 @@
 package com.example.peanut.domain.Model
 
-data class OpenTreadsItem(
+data class OpenTradeResponse(
     val comment: Any,
     val currentPrice: Double,
     val digits: Int,

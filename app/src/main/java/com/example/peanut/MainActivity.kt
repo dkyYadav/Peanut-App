@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import com.example.peanut.Navigation.NavController
 import com.example.peanut.Presentation.viewmodel.AccountInfoViewModel
 import com.example.peanut.Presentation.viewmodel.AuthViewModel
+import com.example.peanut.Presentation.viewmodel.OpenTradeViewModel
 import com.example.peanut.Presentation.viewmodel.ViewModelFactory
 import com.example.peanut.data.local.Preferences.AuthPreferences
 
@@ -20,6 +21,9 @@ class MainActivity : ComponentActivity() {
     private val accountInfoViewModel: AccountInfoViewModel by viewModels {
         ViewModelFactory(application)
     }
+    private val openTradeViewModel: OpenTradeViewModel by viewModels{
+        ViewModelFactory(application)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,7 +32,8 @@ class MainActivity : ComponentActivity() {
             NavController(
                 authViewModel = authViewModel,
                 accountInfoViewModel = accountInfoViewModel,
-                preferences = preferences
+                preferences = preferences,
+                openTradeViewModel = openTradeViewModel
             )
         }
     }
