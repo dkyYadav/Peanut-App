@@ -16,7 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -44,8 +47,8 @@ import com.example.peanut.Presentation.viewmodel.ViewModelFactory
 import com.example.peanut.UiState
 
 @Composable
-//@Preview(showBackground = true)
-fun Login(navHostController: NavHostController
+fun Login(
+    navHostController: NavHostController
 ) {
 
     var userId by remember() { mutableStateOf("") }
@@ -75,7 +78,6 @@ fun Login(navHostController: NavHostController
         }
     }
 
-
     Column (modifier = Modifier
         .fillMaxSize()
         .padding(start = 25.dp, end = 25.dp, top = 10.dp),
@@ -86,11 +88,10 @@ fun Login(navHostController: NavHostController
         Box(modifier = Modifier.padding(bottom = 30.dp)
         ){
             Text(
-                text = "Welcome Back!", fontSize = 55.sp
+                text = "Welcome Back!", fontSize = 50.sp
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
-
 
         OutlinedTextField(
             value = userId,
@@ -101,13 +102,11 @@ fun Login(navHostController: NavHostController
             modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
 
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Email,
+                Icon(imageVector = Icons.Default.Person,
                     contentDescription = "UserId")
             }
         )
         Spacer(modifier = Modifier.height(20.dp))
-
-
 
         OutlinedTextField(
             value = password,
@@ -155,8 +154,8 @@ fun Login(navHostController: NavHostController
         },
             modifier = Modifier.height(50.dp).fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            //colors = ButtonDefaults
-               // .buttonColors(containerColor = colorResource(R.color.main_Color) )
+            colors = ButtonDefaults
+               .buttonColors(containerColor = colorResource(R.color.App_Color) )
 
         ) {
 
@@ -165,7 +164,7 @@ fun Login(navHostController: NavHostController
 
                     CircularProgressIndicator(
                         color = Color.White,
-                        strokeWidth = 2.dp
+                        strokeWidth = 1.dp
                     )
                 }
                 else -> {
@@ -186,15 +185,10 @@ fun Login(navHostController: NavHostController
             Spacer(modifier = Modifier.width(5.dp))
             Text(
                 text = "Sign Up",
-              //  color = colorResource(R.color.main_Color),
+              color = colorResource(R.color.App_Color),
                 modifier = Modifier.clickable {
-                   // navHostController.navigate(Routes.Signup)
                 }, fontSize = 20.sp
             )
         }
-
-
-
-
     }
 }

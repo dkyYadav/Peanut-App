@@ -2,6 +2,7 @@ package com.example.peanut.data.local.Preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 
 class AuthPreferences (context: Context){
 
@@ -12,6 +13,16 @@ class AuthPreferences (context: Context){
         preferences.edit()
             .putString("Token",token)
             .apply()
+        Log.d("VMLOGIN", "Token saved: $token")
+    }
+    fun saveLogin(login: String){
+        preferences.edit()
+            .putString("Login",login)
+            .apply()
+        Log.d("VMLOGIN", "Token saved: $login")
+    }
+    fun getLogin(): String?{
+        return preferences.getString("Login",null)
     }
 
     fun getToken(): String?{

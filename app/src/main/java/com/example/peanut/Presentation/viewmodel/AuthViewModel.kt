@@ -3,8 +3,8 @@ package com.example.peanut.Presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.peanut.Model.LoginResponse
-import com.example.peanut.Repo.AuthRepository
+import com.example.peanut.domain.Model.LoginResponse
+import com.example.peanut.domain.Repo.AuthRepository
 import com.example.peanut.UiState
 import com.example.peanut.data.local.Preferences.AuthPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,8 +37,8 @@ class AuthViewModel(
 
                     response.token?.let { token ->
                         preferences.saveToken(token)
-                        Log.d("VMLOGIN", "Token saved: $token")
                     }
+                    preferences.saveLogin(login)
                     _loginResult.value = UiState.Success(response)
 
                 } else {
@@ -56,8 +56,10 @@ class AuthViewModel(
 
     fun checkSession(){
         val token = preferences.getToken()
+        Log.d("SESShjuION", "Token from prefs on app start: $token")
         _isloggedIn.value = !token.isNullOrEmpty()
     }
+
 
     fun logout(){
         preferences.clearToken()

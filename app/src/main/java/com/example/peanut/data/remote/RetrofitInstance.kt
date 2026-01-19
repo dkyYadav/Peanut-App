@@ -16,4 +16,5 @@ object RetrofitInstance {
     val api: PeanutApiService by lazy {
         retrofit.create(PeanutApiService::class.java)
     }
+
 }

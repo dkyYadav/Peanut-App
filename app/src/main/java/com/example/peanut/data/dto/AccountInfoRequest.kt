@@ -1,0 +1,6 @@
+package com.example.peanut.data.dto
+
+data class AccountInfoRequest(
+    val login: String,
+    val token: String
+)

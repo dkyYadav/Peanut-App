@@ -5,14 +5,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.peanut.Presentation.HomeScreen
+import com.example.peanut.Presentation.Home
 import com.example.peanut.Presentation.viewmodel.AuthViewModel
 import com.example.tezora.presentation.auth.view.Login
 import androidx.compose.runtime.getValue
+import com.example.peanut.Presentation.viewmodel.AccountInfoViewModel
+import com.example.peanut.data.local.Preferences.AuthPreferences
 
 
 @Composable
-fun NavController(authViewModel: AuthViewModel) {
+fun NavController(authViewModel: AuthViewModel,
+                  accountInfoViewModel: AccountInfoViewModel,
+                  preferences: AuthPreferences
+) {
     val navController = rememberNavController()
 
     val isLoogedIn by authViewModel.isLoggedIn.collectAsState()
@@ -30,8 +35,10 @@ fun NavController(authViewModel: AuthViewModel) {
         }
 
         composable <Routes.HomeScreen>{
-            HomeScreen(
-                authViewModel = authViewModel
+            Home(
+                authViewModel = authViewModel,
+                accountInfoViewModel = accountInfoViewModel ,
+                preferences = preferences
             )
         }
     }

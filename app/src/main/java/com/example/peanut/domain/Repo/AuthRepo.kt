@@ -1,7 +1,7 @@
-package com.example.peanut.Repo
+package com.example.peanut.domain.Repo
 
-import com.example.peanut.Model.LoginRequest
-import com.example.peanut.Model.LoginResponse
+import com.example.peanut.data.dto.LoginRequest
+import com.example.peanut.domain.Model.LoginResponse
 import com.example.peanut.data.remote.PeanutApiService
 
 class AuthRepository (
