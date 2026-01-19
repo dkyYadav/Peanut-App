@@ -71,7 +71,6 @@ fun  Home(authViewModel: AuthViewModel,
                                     )
                                 }
                             }
-
                         },
                         label = {
                             Text(text = NavItem.label,
