@@ -42,14 +42,14 @@ class AuthViewModel(
                     _loginResult.value = UiState.Success(response)
 
                 } else {
-                    _loginResult.value = UiState.Failure("Login failed")
+                    _loginResult.value = UiState.Failure("Login Failed")
                 }
                 Log.d("VMLOGIN", "TOKEN: ${response.token}")
 
 
             } catch (e: Exception) {
-                Log.d("VMLOGIN", "Error", e)
-                _loginResult.value = UiState.Failure(e.message ?: "Error")
+                Log.e("VMLOGIN", "Error ${e.message}",)
+                _loginResult.value = UiState.Failure("Login Failed")
             }
         }
     }

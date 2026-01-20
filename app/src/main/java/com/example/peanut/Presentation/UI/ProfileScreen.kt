@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.peanut.Presentation.viewmodel.AccountInfoViewModel
 import com.example.peanut.Presentation.viewmodel.AuthViewModel
+import com.example.peanut.Presentation.viewmodel.OpenTradeViewModel
 import com.example.peanut.UiState
 import com.example.peanut.domain.Model.AccountInfoResponse
 import com.example.peanut.domain.Model.PhoneResponse
@@ -38,7 +39,8 @@ import com.example.peanut.domain.Model.PhoneResponse
 fun ProfileScreen(
     authViewModel: AuthViewModel,
     accountInfoViewModel: AccountInfoViewModel,
-    innerpadding: PaddingValues
+    innerPadding: PaddingValues,
+    openTradeViewModel: OpenTradeViewModel
 ) {
 
     val accountInfoState by accountInfoViewModel.accountInfo.collectAsState()
@@ -49,7 +51,7 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerpadding),
+                    .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
@@ -60,14 +62,14 @@ fun ProfileScreen(
             val data = (accountInfoState as UiState.Success<AccountInfoResponse>).data
             val phoneNo = (phoneNoInfoState as UiState.Success<PhoneResponse>).data
 
-            ProfileContent(data, phoneNo, innerpadding, authViewModel)
+            ProfileContent(data, phoneNo, innerPadding, authViewModel)
         }
 
         accountInfoState is UiState.Failure || phoneNoInfoState is UiState.Failure -> {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerpadding),
+                    .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
@@ -85,7 +87,10 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        onClick = { accountInfoViewModel.refetchData() },
+                        onClick = {
+                            accountInfoViewModel.reloadData()
+                            openTradeViewModel.refetchData()
+                                  },
                         modifier = Modifier.widthIn(max = 200.dp)
                     ) {
                         Text("Retry")
@@ -111,15 +116,15 @@ fun ProfileScreen(
 fun ProfileContent(
     account: AccountInfoResponse,
     phoneNO: PhoneResponse,
-    innerpadding: PaddingValues,
+    innerPadding: PaddingValues,
     authViewModel: AuthViewModel
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
         contentPadding = PaddingValues(
-            top = innerpadding.calculateTopPadding() + 8.dp,
-            bottom = innerpadding.calculateBottomPadding() + 8.dp,
+            top = innerPadding.calculateTopPadding() + 8.dp,
+            bottom = innerPadding.calculateBottomPadding() + 8.dp,
             start = 16.dp,
             end = 16.dp
         ),
@@ -142,7 +147,7 @@ fun ProfileContent(
                 onClick = { authViewModel.logout() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .widthIn(max = 400.dp) // Max width for tablets
+                    .widthIn(max = 400.dp)
             ) {
                 Text("Logout")
             }

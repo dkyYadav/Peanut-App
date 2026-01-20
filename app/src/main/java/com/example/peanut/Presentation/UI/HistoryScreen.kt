@@ -33,12 +33,14 @@ import com.example.peanut.UiState
 import com.example.peanut.domain.Model.OpenTradeResponse
 import androidx.compose.material3.Divider
 import androidx.compose.ui.Alignment
+import com.example.peanut.Presentation.viewmodel.AccountInfoViewModel
 
 
 @Composable
 fun HistoryScreen(
-    innerpadding: PaddingValues,
-    openTradeViewModel: OpenTradeViewModel
+    innerPadding: PaddingValues,
+    openTradeViewModel: OpenTradeViewModel,
+    accountInfoViewModel: AccountInfoViewModel
 ) {
     val openTreadState by openTradeViewModel.openTreadInfo.collectAsState()
 
@@ -51,10 +53,15 @@ fun HistoryScreen(
                 verticalArrangement = Arrangement.Center
 
             ) {
-                Text("No Internet")
+                Text(
+                    text = "No Internet Connection",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(onClick = {
                     openTradeViewModel.refetchData()
+                    accountInfoViewModel.reloadData()
                 }) {
                     Text("Reload")
                 }
@@ -70,7 +77,7 @@ fun HistoryScreen(
         }
         is UiState.Success ->{
             val data = (openTreadState as UiState.Success<List<OpenTradeResponse>>).data
-            OpenTradesScreen(data,innerpadding,openTradeViewModel)
+            OpenTradesScreen(data,innerPadding,openTradeViewModel)
         }
         is UiState.Idle -> {}
     }

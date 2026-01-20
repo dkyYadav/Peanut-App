@@ -3,6 +3,7 @@ package com.example.peanut.data.local.Preferences
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.edit
 
 class AuthPreferences (context: Context){
 
@@ -34,8 +35,8 @@ class AuthPreferences (context: Context){
         return preferences.getString(KEY_TOKEN,null)
     }
     fun clearSession() {
-        preferences.edit()
-            .clear()
-            .apply()
+        preferences.edit {
+            clear()
+        }
     }
 }

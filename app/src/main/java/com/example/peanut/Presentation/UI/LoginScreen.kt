@@ -68,8 +68,10 @@ fun Login(
                 showError = true
                 errorMessage = (loginResult as UiState.Failure).error
             }
-            is UiState.Success<*> -> {
-                navHostController.navigate(Routes.HomeScreen)
+            is UiState.Success -> {
+                navHostController.navigate(Routes.HomeScreen){
+                    popUpTo(Routes.LoginScreen){inclusive = true}
+                }
             }
             else -> {
 
@@ -123,13 +125,6 @@ fun Login(
                     contentDescription = "lock"
                 )
             },
-            trailingIcon = {
-                Icon(
-                    painterResource(R.drawable.ic_eye),
-                    contentDescription = "Eye"
-
-                )
-            }
 
         )
 

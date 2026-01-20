@@ -35,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -78,7 +77,7 @@ fun  Home(
         accountInfoViewModel.fetchAccountInfo(login.toString(), token.toString())
         accountInfoViewModel.fetchPhoneNo(login.toString(),token.toString())
         openTradeViewModel.fetchOpenTread(login.toString(), token.toString())
-        accountInfoViewModel.refetchData()
+        accountInfoViewModel.reloadData()
 
     }
 
@@ -145,11 +144,12 @@ fun  Home(
     ){innerpadding->
         when(selectedIndex){
             0-> HomeScreen(innerpadding)
-            1-> HistoryScreen(innerpadding,openTradeViewModel)
+            1-> HistoryScreen(innerpadding,openTradeViewModel,accountInfoViewModel)
             2-> ProfileScreen(
                 authViewModel,
                 accountInfoViewModel,
-                innerpadding
+                innerpadding,
+                openTradeViewModel
             )
         }
     }
