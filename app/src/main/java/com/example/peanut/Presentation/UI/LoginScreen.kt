@@ -153,8 +153,6 @@ fun Login(
         },
             modifier = Modifier.height(50.dp).fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults
-               .buttonColors(containerColor = colorResource(R.color.App_Color) )
 
         ) {
 

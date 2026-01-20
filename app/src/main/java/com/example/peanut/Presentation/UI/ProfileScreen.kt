@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -24,12 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.peanut.Presentation.viewmodel.AccountInfoViewModel
 import com.example.peanut.Presentation.viewmodel.AuthViewModel
 import com.example.peanut.UiState
 import com.example.peanut.domain.Model.AccountInfoResponse
+import com.example.peanut.domain.Model.PhoneResponse
 
 @Composable
 fun ProfileScreen(
@@ -39,41 +42,63 @@ fun ProfileScreen(
 ) {
 
     val accountInfoState by accountInfoViewModel.accountInfo.collectAsState()
-    when(accountInfoState){
-        UiState.Loading -> {
+    val phoneNoInfoState by accountInfoViewModel.phoneNoInfo.collectAsState()
+
+    when {
+        accountInfoState is UiState.Loading -> {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerpadding),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
             }
         }
-        is UiState.Success ->{
-            val data = (accountInfoState as UiState.Success<AccountInfoResponse>).data
-            ProfileContent(data,innerpadding,authViewModel)
-        }
-        is UiState.Failure -> {
-            Column(
-                modifier = Modifier.fillMaxSize()
-                    .padding(15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
 
+        accountInfoState is UiState.Success && phoneNoInfoState is UiState.Success -> {
+            val data = (accountInfoState as UiState.Success<AccountInfoResponse>).data
+            val phoneNo = (phoneNoInfoState as UiState.Success<PhoneResponse>).data
+
+            ProfileContent(data, phoneNo, innerpadding, authViewModel)
+        }
+
+        accountInfoState is UiState.Failure || phoneNoInfoState is UiState.Failure -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerpadding),
+                contentAlignment = Alignment.Center
             ) {
-                Text("No Internet")
-                Spacer(modifier = Modifier.height(10.dp))
-                Button(onClick = {
-                    accountInfoViewModel.refetchData()
-                }) {
-                    Text("Reload")
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Button(
-                    onClick = {
-                        authViewModel.logout()
-                    }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Text("Logout")
+                    Text(
+                        text = "No Internet Connection",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = { accountInfoViewModel.refetchData() },
+                        modifier = Modifier.widthIn(max = 200.dp)
+                    ) {
+                        Text("Retry")
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = { authViewModel.logout() },
+                        modifier = Modifier.widthIn(max = 200.dp)
+                    ) {
+                        Text("Logout")
+                    }
                 }
             }
         }
@@ -85,88 +110,89 @@ fun ProfileScreen(
 @Composable
 fun ProfileContent(
     account: AccountInfoResponse,
+    phoneNO: PhoneResponse,
     innerpadding: PaddingValues,
     authViewModel: AuthViewModel
 ) {
-
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(innerpadding)
+            .fillMaxSize(),
+        contentPadding = PaddingValues(
+            top = innerpadding.calculateTopPadding() + 8.dp,
+            bottom = innerpadding.calculateBottomPadding() + 8.dp,
+            start = 16.dp,
+            end = 16.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
         item {
-            ProfileHeader(account)
+            ProfileHeader(account, phoneNO)
         }
 
         item {
-            Spacer(modifier = Modifier.height(16.dp))
             FinancialSection(account)
         }
 
         item {
-            Spacer(modifier = Modifier.height(16.dp))
             AccountDetailsSection(account)
-
         }
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = {
-                authViewModel.logout()
-            }, modifier = Modifier.padding(15.dp)
+        item {
+            Button(
+                onClick = { authViewModel.logout() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 400.dp) // Max width for tablets
             ) {
-                Text(
-                    text = "Logout"
-                )
+                Text("Logout")
             }
         }
     }
 }
 
 @Composable
-fun ProfileHeader(account: AccountInfoResponse) {
-
+fun ProfileHeader(account: AccountInfoResponse, phoneNO: PhoneResponse) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(15.dp),
-        shape = RoundedCornerShape(14.dp),
-        elevation = CardDefaults.cardElevation(6.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .widthIn(max = 600.dp), // Max width for tablets
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            InfoRow("User Name", account.name.toString())
+            Spacer(modifier = Modifier.height(8.dp))
 
-
-            val damage = null
-            Text(
-                text = account.name,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
+            InfoRow("Phone NO", phoneNO.lastFourDigits.toString())
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = "${account.city}, ${account.country}",
-                color = Color.Gray
+                color = Color.Gray,
+                fontSize = 14.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
 }
+
 @Composable
 fun FinancialSection(account: AccountInfoResponse) {
-
     Card(
-        modifier = Modifier.fillMaxWidth().padding(15.dp),
-        shape = RoundedCornerShape(14.dp),
-        elevation = CardDefaults.cardElevation(6.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .widthIn(max = 600.dp),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-
             Text(
                 text = "Financial Information",
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = 18.sp
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -181,18 +207,18 @@ fun FinancialSection(account: AccountInfoResponse) {
 
 @Composable
 fun AccountDetailsSection(account: AccountInfoResponse) {
-
     Card(
-        modifier = Modifier.fillMaxWidth().padding(15.dp),
-        shape = RoundedCornerShape(14.dp),
-        elevation = CardDefaults.cardElevation(6.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .widthIn(max = 600.dp),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-
             Text(
                 text = "Account Details",
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = 18.sp
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -200,22 +226,34 @@ fun AccountDetailsSection(account: AccountInfoResponse) {
             InfoRow("Address", account.address)
             InfoRow("Zip Code", account.zipCode)
             InfoRow("Phone", account.phone)
-            //InfoRow("Swap Free", if (account.isSwapFree) "Yes" else "No")
-            //InfoRow("Open Trades", if (account.isAnyOpenTrades) "Yes" else "No")
             InfoRow("Total Trades", account.totalTradesCount.toString())
             InfoRow("Total Volume", account.totalTradesVolume.toString())
         }
     }
 }
+
 @Composable
 fun InfoRow(title: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp),
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = title, fontWeight = FontWeight.Medium)
-        Text(text = value)
+        Text(
+            text = title,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            modifier = Modifier.weight(1f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = value,
+            fontSize = 14.sp,
+            modifier = Modifier.weight(1f),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }

@@ -21,7 +21,7 @@ val navItemList = listOf(
         Icons.Default.Home
     ),
     NavItem(
-        "History",
+        "Treads",
         drawableIcon = R.drawable.ic_history
     ),
     NavItem(

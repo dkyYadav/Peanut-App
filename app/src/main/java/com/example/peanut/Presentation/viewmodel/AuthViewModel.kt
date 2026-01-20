@@ -33,12 +33,12 @@ class AuthViewModel(
 
             try {
                 val response = repository.login(login, password)
-                if (response.result == true) {
-
-                    response.token?.let { token ->
-                        preferences.saveToken(token)
-                    }
-                    preferences.saveLogin(login)
+                if (response.result == true && response.token != null) {
+                    preferences.saveSession(
+                        token = response.token.toString(),
+                        login = login
+                    )
+                    _isloggedIn.value = true
                     _loginResult.value = UiState.Success(response)
 
                 } else {
@@ -56,13 +56,20 @@ class AuthViewModel(
 
     fun checkSession(){
         val token = preferences.getToken()
+
+        if (token.isNullOrEmpty()){
+            _isloggedIn.value = false
+
+        }
+            _isloggedIn.value = true
+
         Log.d("SESShjuION", "Token from prefs on app start: $token")
         _isloggedIn.value = !token.isNullOrEmpty()
     }
 
 
     fun logout(){
-        preferences.clearToken()
+        preferences.clearSession()
         _isloggedIn.value = false
     }
 }

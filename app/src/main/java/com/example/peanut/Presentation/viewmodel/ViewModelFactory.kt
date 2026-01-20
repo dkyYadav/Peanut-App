@@ -8,6 +8,7 @@ import com.example.peanut.data.local.Preferences.AuthPreferences
 import com.example.peanut.data.remote.RetrofitInstance
 import com.example.peanut.domain.Repo.AccountRepository
 import com.example.peanut.domain.Repo.OpenTreadsRepo
+import com.example.peanut.domain.Repo.PhoneNoRepository
 
 class ViewModelFactory(
     private val context: Context
@@ -27,9 +28,15 @@ class ViewModelFactory(
 
             modelClass.isAssignableFrom(AccountInfoViewModel::class.java)->{
                 val repository = AccountRepository(RetrofitInstance.api)
+                val authrepository = AuthRepository(RetrofitInstance.api)
+                val phoneRepository = PhoneNoRepository(RetrofitInstance.api)
                 val preferences = AuthPreferences(context.applicationContext)
+                val authViewModel = AuthViewModel(
+                    authrepository,
+                    preferences = preferences
+                )
                 @Suppress("UNCHECKED_CAST")
-                AccountInfoViewModel(repository, preferences) as T
+                AccountInfoViewModel(repository, phoneRepository, preferences,authViewModel) as T
             }
 
             modelClass.isAssignableFrom(OpenTradeViewModel::class.java)->{

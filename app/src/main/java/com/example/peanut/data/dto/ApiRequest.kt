@@ -1,6 +1,6 @@
 package com.example.peanut.data.dto
 
-data class AccountInfoRequest(
+data class ApiRequest(
     val login: String,
     val token: String
 )

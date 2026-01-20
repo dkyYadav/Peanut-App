@@ -76,7 +76,10 @@ fun HistoryScreen(
     }
 }
 @Composable
-fun OpenTradesScreen(trades: List<OpenTradeResponse>, innerpadding: PaddingValues,openTradeViewModel: OpenTradeViewModel) {
+fun OpenTradesScreen(
+    trades: List<OpenTradeResponse>,
+    innerpadding: PaddingValues,
+    openTradeViewModel: OpenTradeViewModel) {
 
     // Calculate the profit
     val totalProfit = trades.sumOf { it.profit }

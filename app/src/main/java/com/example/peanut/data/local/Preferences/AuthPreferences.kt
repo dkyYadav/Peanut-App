@@ -9,28 +9,33 @@ class AuthPreferences (context: Context){
     private val preferences: SharedPreferences =
         context.getSharedPreferences("User_Prefs",  Context.MODE_PRIVATE)
 
-    fun saveToken(token: String){
+    companion object{
+        private const val  KEY_TOKEN = "Token"
+        private const val  KEY_LOGIN = "Login"
+        private const val  KEY_EXPIRY = "Token_Expiry"
+    }
+
+    fun saveSession(token: String,login: String){
+
         preferences.edit()
-            .putString("Token",token)
+            .putString(KEY_TOKEN,token)
+            .putString(KEY_LOGIN,login)
             .apply()
         Log.d("VMLOGIN", "Token saved: $token")
     }
-    fun saveLogin(login: String){
-        preferences.edit()
-            .putString("Login",login)
-            .apply()
-        Log.d("VMLOGIN", "Token saved: $login")
-    }
+
+
+
     fun getLogin(): String?{
-        return preferences.getString("Login",null)
+        return preferences.getString(KEY_LOGIN,null)
     }
 
     fun getToken(): String?{
-        return preferences.getString("Token",null)
+        return preferences.getString(KEY_TOKEN,null)
     }
-    fun clearToken(){
+    fun clearSession() {
         preferences.edit()
-            .remove("Token")
+            .clear()
             .apply()
     }
 }
